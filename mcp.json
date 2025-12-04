@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "playwright-html-render": {
+      "command": "node",
+      "args": ["src/mcp-server.js"],
+      "env": {
+        "MISTRAL_API_KEY": "${MISTRAL_API_KEY}"
+      }
+    }
+  }
+}
+
+

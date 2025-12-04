@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de test - Problèmes de rendu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        /* Problème: contraste insuffisant */
+        .text-low-contrast {
+            color: #cccccc;
+            background: #f5f5f5;
+        }
+        /* Problème: alignement */
+        .misaligned {
+            display: inline-block;
+            vertical-align: top;
+        }
+        /* Problème: overflow */
+        .overflow-box {
+            width: 100px;
+            height: 50px;
+            overflow: hidden;
+            border: 2px solid red;
+        }
+        .long-text {
+            width: 50px;
+        }
+        /* Problème: responsive */
+        .not-responsive {
+            width: 2000px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Page de test avec problèmes de rendu</h1>
+        
+        <section>
+            <h2>Problème 1: Contraste insuffisant</h2>
+            <p class="text-low-contrast">
+                Ce texte a un contraste insuffisant et sera difficile à lire.
+            </p>
+        </section>
+        
+        <section>
+            <h2>Problème 2: Alignement</h2>
+            <div class="misaligned">
+                <p>Élément 1</p>
+            </div>
+            <div class="misaligned">
+                <p>Élément 2</p>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Problème 3: Overflow</h2>
+            <div class="overflow-box">
+                <p class="long-text">Ce texte est trop long et déborde de sa boîte</p>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Problème 4: Non responsive</h2>
+            <div class="not-responsive">
+                Cette div est trop large et causera un scroll horizontal
+            </div>
+        </section>
+        
+        <section>
+            <h2>Problème 5: Accessibilité</h2>
+            <img src="image.jpg" alt="">
+            <button>Cliquez ici</button>
+        </section>
+    </div>
+    
+    <script>
+        // Problème: erreur JavaScript potentielle
+        console.log('Page chargée');
+        // undefinedFunction(); // Décommenter pour créer une erreur
+    </script>
+</body>
+</html>
+
