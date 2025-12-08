@@ -8,4 +8,5 @@ export { analyzeRender } from './analyze.js';
 export { fixRender } from './fix.js';
 export { testAndFix } from './test.js';
 export { verifyRender } from './verify.js';
+export { createLogoComposite, createLogoFromInstructions, extractSecondaryLogo } from './logo.js';
 

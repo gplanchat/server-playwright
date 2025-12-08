@@ -16,6 +16,7 @@ import { analyzeRender } from './analyze.js';
 import { fixRender } from './fix.js';
 import { testAndFix } from './test.js';
 import { verifyRender } from './verify.js';
+import { createLogoComposite, createLogoFromInstructions, extractSecondaryLogo } from './logo.js';
 import './config.js'; // Charger les variables d'environnement
 
 class PlaywrightMCPServer {
@@ -186,6 +187,97 @@ class PlaywrightMCPServer {
             required: ['htmlPath', 'expectedDescription'],
           },
         },
+        {
+          name: 'create_logo_composite',
+          description: 'Crée un logo composite en combinant deux logos',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              primaryLogoUrl: {
+                type: 'string',
+                description: 'URL ou chemin vers le logo principal',
+              },
+              secondaryLogoUrl: {
+                type: 'string',
+                description: 'URL ou chemin vers le logo secondaire',
+              },
+              outputName: {
+                type: 'string',
+                description: 'Nom du fichier de sortie (optionnel, généré automatiquement si non fourni)',
+              },
+              spacing: {
+                type: 'number',
+                default: 20,
+                description: 'Espacement entre les logos en pixels',
+              },
+              primaryLogoHeight: {
+                type: 'number',
+                description: 'Hauteur du logo principal en pixels (optionnel, conserve les proportions originales si non fourni)',
+              },
+              secondaryLogoHeight: {
+                type: 'number',
+                default: 40,
+                description: 'Hauteur du logo secondaire en pixels',
+              },
+              padding: {
+                type: 'object',
+                properties: {
+                  top: { type: 'number', default: 20 },
+                  right: { type: 'number', default: 20 },
+                  bottom: { type: 'number', default: 20 },
+                  left: { type: 'number', default: 20 },
+                },
+                description: 'Padding autour du logo composite',
+              },
+              quality: {
+                type: 'number',
+                default: 100,
+                description: 'Qualité PNG (1-100)',
+              },
+            },
+            required: ['primaryLogoUrl', 'secondaryLogoUrl'],
+          },
+        },
+        {
+          name: 'create_logo_from_instructions',
+          description: 'Crée un logo composite à partir du nom d\'une entreprise et d\'instructions',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              companyName: {
+                type: 'string',
+                description: 'Nom de l\'entreprise',
+              },
+              secondaryLogoUrl: {
+                type: 'string',
+                description: 'URL ou chemin vers le logo secondaire',
+              },
+              primaryLogoUrl: {
+                type: 'string',
+                description: 'URL ou chemin vers le logo de l\'entreprise (requis)',
+              },
+              outputName: {
+                type: 'string',
+                description: 'Nom du fichier de sortie (optionnel)',
+              },
+              spacing: {
+                type: 'number',
+                default: 20,
+                description: 'Espacement entre les logos en pixels',
+              },
+              primaryLogoHeight: {
+                type: 'number',
+                description: 'Hauteur du logo principal en pixels',
+              },
+              secondaryLogoHeight: {
+                type: 'number',
+                default: 40,
+                description: 'Hauteur du logo secondaire en pixels',
+              },
+            },
+            required: ['companyName', 'secondaryLogoUrl', 'primaryLogoUrl'],
+          },
+        },
       ],
     }));
 
@@ -339,6 +431,67 @@ class PlaywrightMCPServer {
                     },
                     expectedDescription: result.expectedDescription,
                     verificationType: result.verificationType,
+                  }, null, 2),
+                },
+              ],
+            };
+          }
+
+          case 'create_logo_composite': {
+            const result = await createLogoComposite(
+              args.primaryLogoUrl,
+              args.secondaryLogoUrl,
+              {
+                outputName: args.outputName,
+                spacing: args.spacing || 20,
+                primaryLogoHeight: args.primaryLogoHeight,
+                secondaryLogoHeight: args.secondaryLogoHeight || 40,
+                padding: args.padding || { top: 20, right: 20, bottom: 20, left: 20 },
+                quality: args.quality || 100,
+              }
+            );
+
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    success: true,
+                    message: 'Logo composite créé avec succès',
+                    outputPath: result.outputPath,
+                    filename: result.filename,
+                    dimensions: result.dimensions,
+                    metadata: result.metadata,
+                  }, null, 2),
+                },
+              ],
+            };
+          }
+
+          case 'create_logo_from_instructions': {
+            const result = await createLogoFromInstructions(
+              args.companyName,
+              args.secondaryLogoUrl,
+              {
+                primaryLogoUrl: args.primaryLogoUrl,
+                outputName: args.outputName,
+                spacing: args.spacing || 20,
+                primaryLogoHeight: args.primaryLogoHeight,
+                secondaryLogoHeight: args.secondaryLogoHeight || 40,
+              }
+            );
+
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    success: true,
+                    message: `Logo composite pour "${args.companyName}" créé avec succès`,
+                    outputPath: result.outputPath,
+                    filename: result.filename,
+                    dimensions: result.dimensions,
+                    metadata: result.metadata,
                   }, null, 2),
                 },
               ],
